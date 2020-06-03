@@ -14,7 +14,7 @@ class StudentController extends Controller
      */
     public function index()
     {
-        //
+        return view('index');
     }
 
     /**
@@ -35,7 +35,11 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $student = Student::create($this->validateRequest());
+
+        $this->storeImage($student);
+
+        return redirect()->back();
     }
 
     /**
@@ -81,5 +85,26 @@ class StudentController extends Controller
     public function destroy(Student $student)
     {
         //
+    }
+
+    private function validateRequest()
+    {
+        return request()->validate([
+            'roll_id' => 'required|max:10',
+            'firstName' => 'required',
+            'secondName' => 'required',
+            'faculty' => 'required',
+            'assignment_title' => 'required|min:4',
+            'assignment_file' => 'required|file|image|max:10000',
+        ]);
+    }
+
+    private function storeImage($student)
+    {
+        if(request()->has('assignment_file')) {
+            $student->update([
+                'assignment_file' => request()->assignment_file->store('uploads', 'public'),
+            ]);
+        }
     }
 }
