@@ -17,3 +17,8 @@
 
 Route::get('/', "StudentController@index");
 Route::post('/store', "StudentController@store");
+Route::get('/teacher', "StudentController@show");
+Route::get('/edit/{id}',"StudentController@edit") ;
+Route::patch('/update/{id}',"StudentController@update") ;
+Route::get('/delete/{id}',"StudentController@destroy") ;
+

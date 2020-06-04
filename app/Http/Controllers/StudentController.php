@@ -14,7 +14,8 @@ class StudentController extends Controller
      */
     public function index()
     {
-        return view('index');
+        $students = Student::orderBy('created_at', 'desc')->paginate(10);
+        return view('index', ['students'=>$students,'layout'=>'index']);
     }
 
     /**
@@ -48,9 +49,10 @@ class StudentController extends Controller
      * @param  \App\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function show(Student $student)
+    public function show()
     {
-        //
+        $students = Student::orderBy('created_at', 'desc')->get();
+        return view('index', ['students'=>$students,'layout'=>'teacher']);
     }
 
     /**
@@ -59,9 +61,10 @@ class StudentController extends Controller
      * @param  \App\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function edit(Student $student)
+    public function edit($id)
     {
-        //
+      $student = Student::find($id);
+      return view('index', ['student'=>$student, 'layout'=>'edit']);
     }
 
     /**
@@ -71,9 +74,27 @@ class StudentController extends Controller
      * @param  \App\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Student $student)
+    public function update(Request $request, $id)
     {
-        //
+        $this->validate($request,[
+            'roll_id' => 'required|max:10|unique:students,roll_id,'.$id,
+            'firstName' => 'required',
+            'secondName' => 'required',
+            'faculty' => 'required',
+            'assignment_title' => 'required|min:4',
+            'assignment_file' => 'sometimes|file|image|max:10000',
+        ]);
+
+        $student = Student::find($id);
+        $student->roll_id = $request->input('roll_id') ;
+        $student->firstName = $request->input('firstName') ;
+        $student->secondName = $request->input('secondName') ;
+        $student->faculty = $request->input('faculty') ;
+        $student->assignment_title = $request->input('assignment_title') ;
+        $this->storeImage($student);
+        $student->save() ;
+        return redirect('/teacher') ;
+
     }
 
     /**
@@ -82,15 +103,17 @@ class StudentController extends Controller
      * @param  \App\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Student $student)
+    public function destroy($id)
     {
-        //
+        $student = Student::find($id);
+        $student->delete() ;
+        return redirect('/teacher') ;
     }
 
     private function validateRequest()
     {
         return request()->validate([
-            'roll_id' => 'required|max:10',
+            'roll_id' => 'required|max:10|unique:students,roll_id,',
             'firstName' => 'required',
             'secondName' => 'required',
             'faculty' => 'required',
