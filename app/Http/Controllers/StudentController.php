@@ -82,7 +82,7 @@ class StudentController extends Controller
             'secondName' => 'required',
             'faculty' => 'required',
             'assignment_title' => 'required|min:4',
-            'assignment_file' => 'sometimes|file|image|max:10000',
+            'assignment_file' => 'file|image|max:10000',
         ]);
 
         $student = Student::find($id);
@@ -91,7 +91,11 @@ class StudentController extends Controller
         $student->secondName = $request->input('secondName') ;
         $student->faculty = $request->input('faculty') ;
         $student->assignment_title = $request->input('assignment_title') ;
-        $this->storeImage($student);
+
+        if(request()->has('assignment_file')) {
+            $this->storeImage($student);
+        }
+        
         $student->save() ;
         return redirect('/teacher') ;
 

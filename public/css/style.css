@@ -49,9 +49,9 @@ input[type=text]:focus{
     border: none !important;
 }
 footer {
-    position: fixed;
+    position: static;
     height: 10px;
     width: 100%;
     background:#342b38 ;
-    bottom: 0px;
+    bottom: 0;
 }
