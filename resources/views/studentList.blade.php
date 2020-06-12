@@ -1,7 +1,3 @@
-<div class="card mb-3">
-    <div class="card-body">
-        <h5 class="card-title">List of students</h5>
-        <p class="card-text">Submitted assignments of all student.</p>
 
         <table class="table">
             <thead class="thead-light">
@@ -10,9 +6,12 @@
                 <th scope="col">First name</th>
                 <th scope="col">Second Name</th>
                 <th scope="col">Faculty</th>
+
+                @if($layout == 'teacher')
                 <th scope="col">Assignment Title</th>
                 <th scope="col">Assignment File</th>
                 <th scope="col">Operations</th>
+                @endif
 
             </tr>
             </thead>
@@ -24,6 +23,8 @@
                     <td>{{ $student->firstName }}</td>
                     <td>{{ $student->secondName }}</td>
                     <td>{{ $student->faculty }}</td>
+                    
+                    @if($layout == 'teacher')
                     <td>{{ $student->assignment_title }}</td>
                     <td>
                         <a href="/storage/{{ $student->assignment_file }}" target="_blank">
@@ -36,11 +37,10 @@
                         <a href="{{ url('/delete/'.$student->id) }}" class="btn btn-sm btn-danger">Delete</a>
 
                     </td>
+                    @endif
 
                 </tr>
             @endforeach
             </tbody>
         </table>
-    </div>
-</div>
-
+    
